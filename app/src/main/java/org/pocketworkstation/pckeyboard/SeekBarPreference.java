@@ -4,7 +4,7 @@ import java.util.Locale;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.preference.DialogPreference;
+import androidx.preference.DialogPreference;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.SeekBar;
@@ -15,21 +15,22 @@ import android.widget.TextView;
  */
 public class SeekBarPreference extends DialogPreference {
 
-    private TextView mMinText;
-    private TextView mMaxText;
-    private TextView mValText;
-    private SeekBar mSeek;
-    private float mMin;
-    private float mMax;
-    private float mVal;
-    private float mPrevVal;
-    private float mStep;
-    private boolean mAsPercent;
-    private boolean mLogScale;
-    private String mDisplayFormat;
+    protected float mMin;
+    protected float mMax;
+    protected float mVal;
+    protected float mPrevVal;
+    protected float mStep;
+    protected boolean mAsPercent;
+    protected boolean mLogScale;
+    protected String mDisplayFormat;
 
     public SeekBarPreference(Context context, AttributeSet attrs) {
         super(context, attrs);
+        init(context, attrs);
+    }
+    
+    public SeekBarPreference(Context context, AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
         init(context, attrs);
     }
 
@@ -43,24 +44,25 @@ public class SeekBarPreference extends DialogPreference {
         mAsPercent = a.getBoolean(R.styleable.SeekBarPreference_asPercent, false);
         mLogScale = a.getBoolean(R.styleable.SeekBarPreference_logScale, false);
         mDisplayFormat = a.getString(R.styleable.SeekBarPreference_displayFormat);
+        a.recycle();
     }
 
     @Override
-    protected Float onGetDefaultValue(TypedArray a, int index) {
+    protected Object onGetDefaultValue(TypedArray a, int index) {
         return a.getFloat(index, 0.0f);
     }
 
     @Override
-    protected void onSetInitialValue(boolean restorePersistedValue, Object defaultValue) {     
-        if (restorePersistedValue) {
-            setVal(getPersistedFloat(0.0f));
+    protected void onSetInitialValue(Object defaultValue) {
+        if (defaultValue == null) {
+            setVal(getPersistedFloat(mVal));
         } else {
             setVal((Float) defaultValue);
         }
         savePrevVal();
     }
 
-    private String formatFloatDisplay(Float val) {
+    public String formatFloatDisplay(Float val) {
         // Use current locale for format, this is for display only.
         if (mAsPercent) {
             return String.format("%d%%", (int) (val * 100));
@@ -71,10 +73,6 @@ public class SeekBarPreference extends DialogPreference {
         } else {
             return Float.toString(val);
         }
-    }
-    
-    private void showVal() {
-        mValText.setText(formatFloatDisplay(mVal));
     }
     
     protected void setVal(Float val) {
@@ -93,12 +91,12 @@ public class SeekBarPreference extends DialogPreference {
         return Float.toString(mVal);
     }
     
-    private float percentToSteppedVal(int percent, float min, float max, float step, boolean logScale) {
+    public float percentToSteppedVal(int percent, float min, float max, float step, boolean logScale) {
         float val;
         if (logScale) {
             val = (float) Math.exp(percentToSteppedVal(percent, (float) Math.log(min), (float) Math.log(max), step, false));
         } else {
-            float delta = percent * (max - min) / 100;
+            float delta = percent * (max - min) / 100.0f;
             if (step != 0.0f) {
                 delta = Math.round(delta / step) * step;
             }
@@ -109,47 +107,16 @@ public class SeekBarPreference extends DialogPreference {
         return val;
     }
 
-    private int getPercent(float val, float min, float max) {
-        return (int) (100 * (val - min) / (max - min));
+    public int getPercent(float val, float min, float max) {
+        return (int) (100.0f * (val - min) / (max - min));
     }
     
-    private int getProgressVal() {
+    public int getProgressVal() {
         if (mLogScale) {
             return getPercent((float) Math.log(mVal), (float) Math.log(mMin), (float) Math.log(mMax));
         } else {
             return getPercent(mVal, mMin, mMax);
         }
-    }
-
-    @Override
-    protected void onBindDialogView(View view) {
-        mSeek = (SeekBar) view.findViewById(R.id.seekBarPref);
-        mMinText = (TextView) view.findViewById(R.id.seekMin);
-        mMaxText = (TextView) view.findViewById(R.id.seekMax);
-        mValText = (TextView) view.findViewById(R.id.seekVal);
-        
-        showVal();
-        mMinText.setText(formatFloatDisplay(mMin));
-        mMaxText.setText(formatFloatDisplay(mMax));
-        mSeek.setProgress(getProgressVal());
-
-        mSeek.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            public void onStopTrackingTouch(SeekBar seekBar) {}
-            public void onStartTrackingTouch(SeekBar seekBar) {}
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                if (fromUser) {
-                    float newVal = percentToSteppedVal(progress, mMin, mMax, mStep, mLogScale);
-                    if (newVal != mVal) {
-                        onChange(newVal);
-                    }
-                    setVal(newVal);
-                    mSeek.setProgress(getProgressVal());
-                }
-                showVal();
-            }
-        });
-        
-        super.onBindDialogView(view);
     }
 
     public void onChange(float val) {
@@ -161,8 +128,7 @@ public class SeekBarPreference extends DialogPreference {
         return formatFloatDisplay(mVal);
     }
     
-    @Override
-    protected void onDialogClosed(boolean positiveResult) {
+    public void onDialogClosed(boolean positiveResult) {
         if (!positiveResult) {
             restoreVal();
             return;

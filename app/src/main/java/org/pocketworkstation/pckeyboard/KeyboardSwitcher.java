@@ -656,7 +656,7 @@ public class KeyboardSwitcher implements
         if (PREF_KEYBOARD_LAYOUT.equals(key)) {
             changeLatinKeyboardView(Integer.valueOf(sharedPreferences
                     .getString(key, DEFAULT_LAYOUT_ID)), true);
-        } else if (LatinIMESettings.PREF_SETTINGS_KEY.equals(key)) {
+        } else if (LatinIMESettings.LatinIMESettingsFragment.PREF_SETTINGS_KEY.equals(key)) {
             updateSettingsKeyState(sharedPreferences);
             recreateInputView();
         }
@@ -675,7 +675,7 @@ public class KeyboardSwitcher implements
     private void updateSettingsKeyState(SharedPreferences prefs) {
         Resources resources = mInputMethodService.getResources();
         final String settingsKeyMode = prefs.getString(
-                LatinIMESettings.PREF_SETTINGS_KEY, resources
+                LatinIMESettings.LatinIMESettingsFragment.PREF_SETTINGS_KEY, resources
                         .getString(DEFAULT_SETTINGS_KEY_MODE));
         // We show the settings key when 1) SETTINGS_KEY_MODE_ALWAYS_SHOW or
         // 2) SETTINGS_KEY_MODE_AUTO and there are two or more enabled IMEs on

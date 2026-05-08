@@ -1,0 +1,7 @@
+{
+	"InstallScripts" : 
+	[
+		"/data/data/com.termux/files/home/git/attajak/hackerskeyboard/app/build_native/cmake_install.cmake"
+	],
+	"Parallel" : false
+}

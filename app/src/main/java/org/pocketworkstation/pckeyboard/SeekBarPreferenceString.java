@@ -19,33 +19,37 @@ public class SeekBarPreferenceString extends SeekBarPreference {
 
     public SeekBarPreferenceString(Context context, AttributeSet attrs) {
         super(context, attrs);
-        init(context, attrs);
+    }
+
+    public SeekBarPreferenceString(Context context, AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
     }
 
     // Some saved preferences from old versions have " ms" or "%" suffix, remove that.
     private float floatFromString(String pref) {
+        if (pref == null) return 0.0f;
         Matcher num = FLOAT_RE.matcher(pref);
         if (!num.matches()) return 0.0f;
         return Float.valueOf(num.group(1));
     }
-    
+
     @Override
-    protected Float onGetDefaultValue(TypedArray a, int index) {
+    protected Object onGetDefaultValue(TypedArray a, int index) {
         return floatFromString(a.getString(index));
     }
 
     @Override
-    protected void onSetInitialValue(boolean restorePersistedValue, Object defaultValue) {
-        if (restorePersistedValue) {
+    protected void onSetInitialValue(Object defaultValue) {
+        if (defaultValue == null) {
             setVal(floatFromString(getPersistedString("0.0")));
         } else {
-            setVal(Float.valueOf((Float) defaultValue));
+            setVal((Float) defaultValue);
         }
         savePrevVal();
     }
-    
+
     @Override
-    protected void onDialogClosed(boolean positiveResult) {
+    public void onDialogClosed(boolean positiveResult) {
         if (!positiveResult) {
             restoreVal();
             return;

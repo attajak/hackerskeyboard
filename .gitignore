@@ -11,3 +11,5 @@
 /captures
 gradle
 .externalNativeBuild
+/build_native
+termux.toolchain.cmake

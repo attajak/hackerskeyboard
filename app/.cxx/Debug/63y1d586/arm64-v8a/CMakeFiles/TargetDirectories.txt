@@ -1,0 +1,3 @@
+/data/data/com.termux/files/home/git/attajak/hackerskeyboard/app/.cxx/Debug/63y1d586/arm64-v8a/CMakeFiles/jni_pckeyboard.dir
+/data/data/com.termux/files/home/git/attajak/hackerskeyboard/app/.cxx/Debug/63y1d586/arm64-v8a/CMakeFiles/edit_cache.dir
+/data/data/com.termux/files/home/git/attajak/hackerskeyboard/app/.cxx/Debug/63y1d586/arm64-v8a/CMakeFiles/rebuild_cache.dir
