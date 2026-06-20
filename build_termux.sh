@@ -6,7 +6,7 @@ echo "--- 1. Building Native Library (C++) ---"
 mkdir -p app/build_native
 cd app/build_native
 # Using native clang/clang++ and ninja in Termux
-cmake -G Ninja -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ ..
+cmake -G Ninja -DCMAKE_C_COMPILER=aarch64-linux-android-clang -DCMAKE_CXX_COMPILER=aarch64-linux-android-clang++ ..
 ninja
 cd ../..
 

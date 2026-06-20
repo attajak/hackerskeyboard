@@ -7,9 +7,9 @@
 /.idea/modules.xml
 /.idea/workspace.xml
 .DS_Store
-/build
-/captures
-gradle
+build
+captures
+.cxx
 .externalNativeBuild
-/build_native
+build_native
 termux.toolchain.cmake
